@@ -1,1 +1,1 @@
-# Trilha JS Developer - Pokedex
+# Desafío Feito - Pokedex usando API request🎉 
