@@ -1,13 +1,13 @@
 const pokemonList = document.getElementById('pokemonList')
 const loadMoreButton = document.getElementById('loadMoreButton')
 
-const maxRecords = 151
+const maxRecords = 15
 const limit = 10
 let offset = 0;
 
 function convertPokemonToLi(pokemon) {
     return `
-        <li class="pokemon ${pokemon.type}">
+        <li class="pokemon ${pokemon.type}" data-id="${pokemon.number}"> 
             <span class="number">#${pokemon.number}</span>
             <span class="name">${pokemon.name}</span>
 
@@ -45,3 +45,37 @@ loadMoreButton.addEventListener('click', () => {
         loadPokemonItens(offset, limit)
     }
 })
+
+
+function showPokemonDetail(pokemon) {
+    const detailSection = document.getElementById('pokemonDetail');
+
+
+    
+    // Limpiar clases anteriores
+    detailSection.className = ''; // elimina clases previas
+    detailSection.classList.add(pokemon.type); // agrega la clase del tipo principal
+
+    detailSection.innerHTML = `
+        <h2>${pokemon.name} (#${pokemon.number})</h2>
+        <img src="${pokemon.photo}" alt="${pokemon.name}" />
+        <p><strong>Type:</strong> ${pokemon.types.join(', ')}</p>
+        <p><strong>Abilities:</strong> ${pokemon.abilities.join(', ')}</p>
+        <p><strong>Experience:</strong> ${pokemon.experience}</p>
+        <p><strong>Heigth:</strong> ${pokemon.height}</p>
+        <p><strong>Weight:</strong> ${pokemon.weight}</p>
+    `;
+}
+
+
+pokemonList.addEventListener('click', (event) => {
+    const li = event.target.closest('li[data-id]');
+    if (!li) return;
+
+    const pokemonId = li.getAttribute('data-id');
+
+    fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`)
+        .then(response => response.json())
+        .then(convertPokeApiDetailToPokemon)
+        .then(showPokemonDetail);
+});
